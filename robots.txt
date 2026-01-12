@@ -1,0 +1,29 @@
+User-agent: *
+Allow: /
+
+# Bloquer l'indexation des pages légales
+Disallow: /page_html/legal/terms-of-use.html
+Disallow: /page_html/legal/privacy-policy.html
+Disallow: /page_html/legal/legal-notice.html
+
+# Sitemap (doit être accessible pour Google)
+Sitemap: https://rvtravelshop.com/sitemap.xml
+
+# Désactiver l'indexation des dossiers techniques
+Disallow: /APPLI:SCRIPT aliexpress/
+Disallow: /scripts/
+Disallow: /config/
+Disallow: /CSV/
+Disallow: /copie/
+Disallow: /sauvegarde/
+
+# Autoriser les images
+Allow: /images/
+
+# Autoriser les pages HTML
+Allow: /*.html
+Allow: /page_html/
+
+# Note: Si Cloudflare ajoute automatiquement "Content-signal: search=yes,ai-train=no"
+# cette directive n'est pas standard robots.txt et peut être ignorée par Google.
+# Pour la supprimer, vérifier les paramètres Cloudflare Pages.

@@ -1,0 +1,56 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+APPLI:SCRIPT aliexpress/
+sauv/
+.DS_Store
+*.log
+node_modules/
+.git/
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Fichiers de credentials YouTube (contiennent des tokens OAuth)
+upload youtube/credentials.json
+upload youtube/credentials.json.old
+**/upload youtube/credentials.json
+**/upload youtube/credentials.json.old
+# Fichiers client_secret (contiennent des secrets OAuth)
+upload youtube/client_secret_*.json
+**/upload youtube/client_secret_*.json
+
+# Exclure les vidéos (trop volumineuses pour GitHub/Cloudflare)
+images/products/**/*.mp4
+images/products/**/*.webm
+images/products/**/*.mov
+images/products/**/*.avi
+images/products/**/*.mkv
+images/video/**
+*.mp4
+*.webm
+*.mov
+*.avi
+*.mkv
+
+# Exclure les fichiers backup CSV (trop volumineux)
+**/*.csv.backup
+**/*.csv.backup*
+**/all_products.csv.backup*
+CSV/*.backup*
+**/CSV/*.backup*
+
+# Exclure les dossiers backup d'images (trop volumineux pour GitHub/Cloudflare)
+images/products_backup*/
+images/**/products_backup*/
+**/products_backup*/
+
+dist/
