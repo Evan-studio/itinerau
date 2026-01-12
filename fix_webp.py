@@ -20,6 +20,7 @@ products = {
     '1005010146019524': 6,
     '1005009173429003': 6,
     '1005007556585645': 6,  # Ajout du produit qui n'affiche pas les 6 images
+    '1005007796602420': 7,  # Produit avec images PNG "Capture d'écran"
 }
 
 print("🔄 Conversion et renommage des images en WEBP...\n")
@@ -31,7 +32,7 @@ for product_id, max_images in products.items():
         print(f"❌ Dossier non trouvé: {product_dir}")
         continue
     
-    # Lister les fichiers PNG triés
+    # Lister les fichiers PNG triés (inclure aussi les fichiers avec "Capture d'écran" dans le nom)
     png_files = sorted([f for f in product_dir.iterdir() if f.is_file() and f.suffix.lower() == '.png'])
     
     if not png_files:
