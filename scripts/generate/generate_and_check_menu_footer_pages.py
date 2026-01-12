@@ -211,42 +211,44 @@ def extract_first_image(image_paths_str, product_id):
     
     images_dir = root_dir / 'images' / 'products' / clean_product_id
     
-    # Pour une page catégorie, le chemin est toujours: ../../../images/products/{product_id}/image_1.*
-    # Les images sont dans le dossier parent, donc ../../../images/
-    if not image_paths_str or not product_id:
-        # Essayer différentes extensions pour image_1
-        for ext in ['.webp', '.jpg', '.jpeg', '.png']:
-            if (images_dir / f'image_1{ext}').exists():
-                return f"../../../images/products/{clean_product_id}/image_1{ext}"
-        return f"../../../images/products/{clean_product_id}/image_1.jpg"  # Fallback
-    
-    # Les images sont séparées par |
-    images = image_paths_str.split('|')
-    if not images:
-        # Essayer différentes extensions pour image_1
-        for ext in ['.webp', '.jpg', '.jpeg', '.png']:
-            if (images_dir / f'image_1{ext}').exists():
-                return f"../../../images/products/{clean_product_id}/image_1{ext}"
-        return f"../../../images/products/{clean_product_id}/image_1.jpg"  # Fallback
-    
-    first_image = images[0].strip()
-    
-    # Extraire le nom du fichier (image_1.jpg, image_2.jpg, etc.)
-    filename = Path(first_image).name
-    filename_stem = Path(filename).stem  # Sans extension
-    
-    # Vérifier si le fichier existe avec l'extension originale
-    if (images_dir / filename).exists():
-        return f"../../../images/products/{clean_product_id}/{filename}"
-    
-    # Essayer différentes extensions
+    # PRIORITÉ 1: Chercher toujours image_1.webp en premier (format standardisé)
+    # Cela évite les problèmes avec les chemins absolus ou les noms "Capture d'écran" dans le CSV
     for ext in ['.webp', '.jpg', '.jpeg', '.png']:
-        alt_filename = f"{filename_stem}{ext}"
-        if (images_dir / alt_filename).exists():
-            return f"../../../images/products/{clean_product_id}/{alt_filename}"
+        if (images_dir / f'image_1{ext}').exists():
+            return f"../../../images/products/{clean_product_id}/image_1{ext}"
     
-    # Si rien n'est trouvé, retourner le nom original (le navigateur gérera l'erreur avec onerror)
-    return f"../../../images/products/{clean_product_id}/{filename}"
+    # PRIORITÉ 2: Si image_1 n'existe pas, utiliser le CSV (mais nettoyer les chemins absolus)
+    if image_paths_str:
+        images = image_paths_str.split('|')
+        if images:
+            first_image = images[0].strip()
+            # Si c'est un chemin absolu, extraire juste le nom du fichier
+            if '/' in first_image:
+                filename = Path(first_image).name
+            else:
+                filename = Path(first_image).name
+            
+            filename_stem = Path(filename).stem  # Sans extension
+            
+            # Vérifier si le fichier existe avec l'extension originale
+            if (images_dir / filename).exists():
+                return f"../../../images/products/{clean_product_id}/{filename}"
+            
+            # Essayer différentes extensions avec le stem
+            for ext in ['.webp', '.jpg', '.jpeg', '.png']:
+                alt_filename = f"{filename_stem}{ext}"
+                if (images_dir / alt_filename).exists():
+                    return f"../../../images/products/{clean_product_id}/{alt_filename}"
+    
+    # PRIORITÉ 3: Fallback - chercher n'importe quelle image dans le dossier
+    if images_dir.exists():
+        for ext in ['.webp', '.jpg', '.jpeg', '.png']:
+            for img_file in sorted(images_dir.glob(f'*{ext}')):
+                if img_file.is_file() and not img_file.name.startswith('.'):
+                    return f"../../../images/products/{clean_product_id}/{img_file.name}"
+    
+    # Dernier fallback
+    return f"../../../images/products/{clean_product_id}/image_1.jpg"
 
 def generate_product_html(product, translations):
     """Génère le HTML pour une carte produit."""
